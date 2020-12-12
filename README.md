@@ -1,4 +1,7 @@
 # Time-Serie
+
+Vous pouvez regarder le rapport : Étude de cas 2 Serie temporelle (Les modèles ARMA,ARCH, GARCH pour la prévision ). Grand merci de votre temps et patience
+
 Présentation de serie temporelle  en Dash (Projet prévision prix de l’électricité)
 
 (Référence: Hands-on machine learning with scikit-learn keras and tensorflow 2nd -- Aurélien Géron )
