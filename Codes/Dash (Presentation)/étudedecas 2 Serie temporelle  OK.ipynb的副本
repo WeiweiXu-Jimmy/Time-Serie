@@ -1,0 +1,2528 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Séries non désaisonnalisées (fr=France, be=Belgique, nl= paus-bas, ger=Allemagne, uk=Grande-Bretagne)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>be_da_base</th>\n",
+       "      <th>fr_da_base</th>\n",
+       "      <th>nl_da_base</th>\n",
+       "      <th>ger_da_base</th>\n",
+       "      <th>uk_da_base_eur</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>39.500</td>\n",
+       "      <td>40.50</td>\n",
+       "      <td>39.000</td>\n",
+       "      <td>36.90</td>\n",
+       "      <td>38.575</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>38.000</td>\n",
+       "      <td>37.75</td>\n",
+       "      <td>38.250</td>\n",
+       "      <td>34.00</td>\n",
+       "      <td>38.630</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>36.000</td>\n",
+       "      <td>36.00</td>\n",
+       "      <td>36.375</td>\n",
+       "      <td>34.00</td>\n",
+       "      <td>35.505</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>35.000</td>\n",
+       "      <td>29.00</td>\n",
+       "      <td>31.500</td>\n",
+       "      <td>29.35</td>\n",
+       "      <td>37.890</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>33.625</td>\n",
+       "      <td>32.20</td>\n",
+       "      <td>34.000</td>\n",
+       "      <td>31.75</td>\n",
+       "      <td>35.460</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>771</th>\n",
+       "      <td>1/22/10</td>\n",
+       "      <td>41.500</td>\n",
+       "      <td>42.00</td>\n",
+       "      <td>40.000</td>\n",
+       "      <td>40.50</td>\n",
+       "      <td>41.425</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>772</th>\n",
+       "      <td>1/25/10</td>\n",
+       "      <td>55.000</td>\n",
+       "      <td>55.25</td>\n",
+       "      <td>53.000</td>\n",
+       "      <td>52.25</td>\n",
+       "      <td>43.375</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>773</th>\n",
+       "      <td>1/26/10</td>\n",
+       "      <td>52.750</td>\n",
+       "      <td>54.25</td>\n",
+       "      <td>48.250</td>\n",
+       "      <td>48.00</td>\n",
+       "      <td>43.765</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>774</th>\n",
+       "      <td>1/27/10</td>\n",
+       "      <td>51.500</td>\n",
+       "      <td>55.00</td>\n",
+       "      <td>42.400</td>\n",
+       "      <td>41.75</td>\n",
+       "      <td>45.635</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>775</th>\n",
+       "      <td>1/28/10</td>\n",
+       "      <td>53.500</td>\n",
+       "      <td>55.00</td>\n",
+       "      <td>49.750</td>\n",
+       "      <td>50.00</td>\n",
+       "      <td>45.560</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>776 rows × 6 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "        date  be_da_base  fr_da_base  nl_da_base  ger_da_base  uk_da_base_eur\n",
+       "0     1/2/07      39.500       40.50      39.000        36.90          38.575\n",
+       "1     1/3/07      38.000       37.75      38.250        34.00          38.630\n",
+       "2     1/4/07      36.000       36.00      36.375        34.00          35.505\n",
+       "3     1/5/07      35.000       29.00      31.500        29.35          37.890\n",
+       "4     1/8/07      33.625       32.20      34.000        31.75          35.460\n",
+       "..       ...         ...         ...         ...          ...             ...\n",
+       "771  1/22/10      41.500       42.00      40.000        40.50          41.425\n",
+       "772  1/25/10      55.000       55.25      53.000        52.25          43.375\n",
+       "773  1/26/10      52.750       54.25      48.250        48.00          43.765\n",
+       "774  1/27/10      51.500       55.00      42.400        41.75          45.635\n",
+       "775  1/28/10      53.500       55.00      49.750        50.00          45.560\n",
+       "\n",
+       "[776 rows x 6 columns]"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_day = pd.read_csv('/Users/xudawei/Desktop/devoirs en M2/Fwd ETUDE DE CAS/Serie temporelle/Series price élec/Day ahead-表格 1.csv',sep =\",\")\n",
+    "df_day\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>be_ma_base</th>\n",
+       "      <th>fr_ma_base</th>\n",
+       "      <th>nl_ma_base</th>\n",
+       "      <th>ger_ma_base</th>\n",
+       "      <th>uk_ma_base_eur</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>56.750</td>\n",
+       "      <td>53.85</td>\n",
+       "      <td>57.500</td>\n",
+       "      <td>53.25</td>\n",
+       "      <td>50.705</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>54.500</td>\n",
+       "      <td>53.75</td>\n",
+       "      <td>55.575</td>\n",
+       "      <td>53.00</td>\n",
+       "      <td>51.300</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>54.500</td>\n",
+       "      <td>53.95</td>\n",
+       "      <td>55.750</td>\n",
+       "      <td>53.10</td>\n",
+       "      <td>50.590</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>53.100</td>\n",
+       "      <td>52.25</td>\n",
+       "      <td>54.100</td>\n",
+       "      <td>51.50</td>\n",
+       "      <td>48.735</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>50.375</td>\n",
+       "      <td>49.35</td>\n",
+       "      <td>51.400</td>\n",
+       "      <td>49.25</td>\n",
+       "      <td>47.070</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>771</th>\n",
+       "      <td>1/22/10</td>\n",
+       "      <td>43.000</td>\n",
+       "      <td>46.00</td>\n",
+       "      <td>41.750</td>\n",
+       "      <td>41.80</td>\n",
+       "      <td>41.195</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>772</th>\n",
+       "      <td>1/25/10</td>\n",
+       "      <td>44.500</td>\n",
+       "      <td>48.00</td>\n",
+       "      <td>43.000</td>\n",
+       "      <td>43.15</td>\n",
+       "      <td>42.005</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>773</th>\n",
+       "      <td>1/26/10</td>\n",
+       "      <td>47.000</td>\n",
+       "      <td>50.80</td>\n",
+       "      <td>44.600</td>\n",
+       "      <td>44.20</td>\n",
+       "      <td>43.705</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>774</th>\n",
+       "      <td>1/27/10</td>\n",
+       "      <td>48.700</td>\n",
+       "      <td>55.00</td>\n",
+       "      <td>45.500</td>\n",
+       "      <td>45.55</td>\n",
+       "      <td>44.205</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>775</th>\n",
+       "      <td>1/28/10</td>\n",
+       "      <td>49.500</td>\n",
+       "      <td>54.50</td>\n",
+       "      <td>45.650</td>\n",
+       "      <td>45.50</td>\n",
+       "      <td>44.695</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>776 rows × 6 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "        date  be_ma_base  fr_ma_base  nl_ma_base  ger_ma_base  uk_ma_base_eur\n",
+       "0     1/2/07      56.750       53.85      57.500        53.25          50.705\n",
+       "1     1/3/07      54.500       53.75      55.575        53.00          51.300\n",
+       "2     1/4/07      54.500       53.95      55.750        53.10          50.590\n",
+       "3     1/5/07      53.100       52.25      54.100        51.50          48.735\n",
+       "4     1/8/07      50.375       49.35      51.400        49.25          47.070\n",
+       "..       ...         ...         ...         ...          ...             ...\n",
+       "771  1/22/10      43.000       46.00      41.750        41.80          41.195\n",
+       "772  1/25/10      44.500       48.00      43.000        43.15          42.005\n",
+       "773  1/26/10      47.000       50.80      44.600        44.20          43.705\n",
+       "774  1/27/10      48.700       55.00      45.500        45.55          44.205\n",
+       "775  1/28/10      49.500       54.50      45.650        45.50          44.695\n",
+       "\n",
+       "[776 rows x 6 columns]"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_month = pd.read_csv('/Users/xudawei/Desktop/devoirs en M2/Fwd ETUDE DE CAS/Serie temporelle/Series price élec/Month ahead-表格 1.csv',sep =\",\")\n",
+    "df_month\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>be_ya_base</th>\n",
+       "      <th>fr_ya_base</th>\n",
+       "      <th>nl_ya_base</th>\n",
+       "      <th>ger_ya_base</th>\n",
+       "      <th>uk_ya_base_eur</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>55.25</td>\n",
+       "      <td>53.000</td>\n",
+       "      <td>58.50</td>\n",
+       "      <td>54.70</td>\n",
+       "      <td>49.595</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>55.25</td>\n",
+       "      <td>52.800</td>\n",
+       "      <td>58.25</td>\n",
+       "      <td>54.35</td>\n",
+       "      <td>49.145</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>55.50</td>\n",
+       "      <td>52.900</td>\n",
+       "      <td>58.05</td>\n",
+       "      <td>54.20</td>\n",
+       "      <td>49.890</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>54.00</td>\n",
+       "      <td>51.800</td>\n",
+       "      <td>56.75</td>\n",
+       "      <td>53.40</td>\n",
+       "      <td>49.150</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>54.70</td>\n",
+       "      <td>51.425</td>\n",
+       "      <td>56.25</td>\n",
+       "      <td>52.70</td>\n",
+       "      <td>48.055</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>771</th>\n",
+       "      <td>1/22/10</td>\n",
+       "      <td>49.20</td>\n",
+       "      <td>51.200</td>\n",
+       "      <td>48.40</td>\n",
+       "      <td>49.20</td>\n",
+       "      <td>45.080</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>772</th>\n",
+       "      <td>1/25/10</td>\n",
+       "      <td>49.35</td>\n",
+       "      <td>51.600</td>\n",
+       "      <td>48.70</td>\n",
+       "      <td>49.60</td>\n",
+       "      <td>45.690</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>773</th>\n",
+       "      <td>1/26/10</td>\n",
+       "      <td>49.30</td>\n",
+       "      <td>51.800</td>\n",
+       "      <td>48.55</td>\n",
+       "      <td>49.60</td>\n",
+       "      <td>46.510</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>774</th>\n",
+       "      <td>1/27/10</td>\n",
+       "      <td>50.00</td>\n",
+       "      <td>52.100</td>\n",
+       "      <td>49.25</td>\n",
+       "      <td>50.05</td>\n",
+       "      <td>45.980</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>775</th>\n",
+       "      <td>1/28/10</td>\n",
+       "      <td>49.50</td>\n",
+       "      <td>51.500</td>\n",
+       "      <td>48.70</td>\n",
+       "      <td>49.45</td>\n",
+       "      <td>45.385</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>776 rows × 6 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "        date  be_ya_base  fr_ya_base  nl_ya_base  ger_ya_base  uk_ya_base_eur\n",
+       "0     1/2/07       55.25      53.000       58.50        54.70          49.595\n",
+       "1     1/3/07       55.25      52.800       58.25        54.35          49.145\n",
+       "2     1/4/07       55.50      52.900       58.05        54.20          49.890\n",
+       "3     1/5/07       54.00      51.800       56.75        53.40          49.150\n",
+       "4     1/8/07       54.70      51.425       56.25        52.70          48.055\n",
+       "..       ...         ...         ...         ...          ...             ...\n",
+       "771  1/22/10       49.20      51.200       48.40        49.20          45.080\n",
+       "772  1/25/10       49.35      51.600       48.70        49.60          45.690\n",
+       "773  1/26/10       49.30      51.800       48.55        49.60          46.510\n",
+       "774  1/27/10       50.00      52.100       49.25        50.05          45.980\n",
+       "775  1/28/10       49.50      51.500       48.70        49.45          45.385\n",
+       "\n",
+       "[776 rows x 6 columns]"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_year = pd.read_csv('/Users/xudawei/Desktop/devoirs en M2/Fwd ETUDE DE CAS/Serie temporelle/Series price élec/Year ahead-表格 1.csv',sep =\",\")\n",
+    "df_year\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Analyse sur le day_data (France-Germany)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>be_da_base</th>\n",
+       "      <th>fr_da_base</th>\n",
+       "      <th>nl_da_base</th>\n",
+       "      <th>ger_da_base</th>\n",
+       "      <th>uk_da_base_eur</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>39.500</td>\n",
+       "      <td>40.50</td>\n",
+       "      <td>39.000</td>\n",
+       "      <td>36.90</td>\n",
+       "      <td>38.575</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>38.000</td>\n",
+       "      <td>37.75</td>\n",
+       "      <td>38.250</td>\n",
+       "      <td>34.00</td>\n",
+       "      <td>38.630</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>36.000</td>\n",
+       "      <td>36.00</td>\n",
+       "      <td>36.375</td>\n",
+       "      <td>34.00</td>\n",
+       "      <td>35.505</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>35.000</td>\n",
+       "      <td>29.00</td>\n",
+       "      <td>31.500</td>\n",
+       "      <td>29.35</td>\n",
+       "      <td>37.890</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>33.625</td>\n",
+       "      <td>32.20</td>\n",
+       "      <td>34.000</td>\n",
+       "      <td>31.75</td>\n",
+       "      <td>35.460</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "     date  be_da_base  fr_da_base  nl_da_base  ger_da_base  uk_da_base_eur\n",
+       "0  1/2/07      39.500       40.50      39.000        36.90          38.575\n",
+       "1  1/3/07      38.000       37.75      38.250        34.00          38.630\n",
+       "2  1/4/07      36.000       36.00      36.375        34.00          35.505\n",
+       "3  1/5/07      35.000       29.00      31.500        29.35          37.890\n",
+       "4  1/8/07      33.625       32.20      34.000        31.75          35.460"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_day.head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Question 1: expliquez ce que sont des prix (ou des contrats) de type AHEAD (day-ahead, etc.)\n",
+    "    \n",
+    "   ils sont les prix prévisionnels dans les journées prochaines       "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Question 2 : faites une analyse descriptive simple de ces données et tracez leur évolution dans le temps.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>fr_da_base</th>\n",
+       "      <th>ger_da_base</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>40.50</td>\n",
+       "      <td>36.90</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>37.75</td>\n",
+       "      <td>34.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>36.00</td>\n",
+       "      <td>34.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>29.00</td>\n",
+       "      <td>29.35</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>32.20</td>\n",
+       "      <td>31.75</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "     date  fr_da_base  ger_da_base\n",
+       "0  1/2/07       40.50        36.90\n",
+       "1  1/3/07       37.75        34.00\n",
+       "2  1/4/07       36.00        34.00\n",
+       "3  1/5/07       29.00        29.35\n",
+       "4  1/8/07       32.20        31.75"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_d = df_day[['date','fr_da_base','ger_da_base']]\n",
+    "df_m = df_month[['date','fr_ma_base','ger_ma_base']]\n",
+    "df_y = df_year[['date','fr_ya_base','ger_ya_base']]\n",
+    "df_d.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "date           0\n",
+       "fr_da_base     0\n",
+       "ger_da_base    0\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_d.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "date           0\n",
+       "fr_ma_base     0\n",
+       "ger_ma_base    0\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_m.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "date           0\n",
+       "fr_ya_base     0\n",
+       "ger_ya_base    0\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_y.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "date            object\n",
+       "fr_da_base     float64\n",
+       "ger_da_base    float64\n",
+       "dtype: object"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_d.dtypes"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "date            object\n",
+       "fr_ma_base     float64\n",
+       "ger_ma_base    float64\n",
+       "dtype: object"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_m.dtypes"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "date            object\n",
+       "fr_ya_base     float64\n",
+       "ger_ya_base    float64\n",
+       "dtype: object"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_y.dtypes"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(776, 3)"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_d.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(776, 3)"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_m.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(776, 3)"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_y.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "DatetimeIndex(['2007-01-02', '2007-01-03', '2007-01-04', '2007-01-05',\n",
+       "               '2007-01-08', '2007-01-09', '2007-01-10', '2007-01-11',\n",
+       "               '2007-01-12', '2007-01-15',\n",
+       "               ...\n",
+       "               '2010-01-15', '2010-01-18', '2010-01-19', '2010-01-20',\n",
+       "               '2010-01-21', '2010-01-22', '2010-01-25', '2010-01-26',\n",
+       "               '2010-01-27', '2010-01-28'],\n",
+       "              dtype='datetime64[ns]', name='date', length=776, freq=None)"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "index = pd.to_datetime(df_d.date)\n",
+    "df_d.index = index\n",
+    "df_d.index"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "DatetimeIndex(['2007-01-02', '2007-01-03', '2007-01-04', '2007-01-05',\n",
+       "               '2007-01-08', '2007-01-09', '2007-01-10', '2007-01-11',\n",
+       "               '2007-01-12', '2007-01-15',\n",
+       "               ...\n",
+       "               '2010-01-15', '2010-01-18', '2010-01-19', '2010-01-20',\n",
+       "               '2010-01-21', '2010-01-22', '2010-01-25', '2010-01-26',\n",
+       "               '2010-01-27', '2010-01-28'],\n",
+       "              dtype='datetime64[ns]', name='date', length=776, freq=None)"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "index = pd.to_datetime(df_m.date)\n",
+    "df_m.index = index\n",
+    "df_m.index"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "DatetimeIndex(['2007-01-02', '2007-01-03', '2007-01-04', '2007-01-05',\n",
+       "               '2007-01-08', '2007-01-09', '2007-01-10', '2007-01-11',\n",
+       "               '2007-01-12', '2007-01-15',\n",
+       "               ...\n",
+       "               '2010-01-15', '2010-01-18', '2010-01-19', '2010-01-20',\n",
+       "               '2010-01-21', '2010-01-22', '2010-01-25', '2010-01-26',\n",
+       "               '2010-01-27', '2010-01-28'],\n",
+       "              dtype='datetime64[ns]', name='date', length=776, freq=None)"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "index = pd.to_datetime(df_y.date)\n",
+    "df_y.index = index\n",
+    "df_y.index"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>fr_da_base</th>\n",
+       "      <th>ger_da_base</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>date</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>2007-01-02</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>40.50</td>\n",
+       "      <td>36.90</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-03</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>37.75</td>\n",
+       "      <td>34.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-04</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>36.00</td>\n",
+       "      <td>34.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-05</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>29.00</td>\n",
+       "      <td>29.35</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-08</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>32.20</td>\n",
+       "      <td>31.75</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              date  fr_da_base  ger_da_base\n",
+       "date                                       \n",
+       "2007-01-02  1/2/07       40.50        36.90\n",
+       "2007-01-03  1/3/07       37.75        34.00\n",
+       "2007-01-04  1/4/07       36.00        34.00\n",
+       "2007-01-05  1/5/07       29.00        29.35\n",
+       "2007-01-08  1/8/07       32.20        31.75"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_d.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>fr_ma_base</th>\n",
+       "      <th>ger_ma_base</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>date</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>2007-01-02</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>53.85</td>\n",
+       "      <td>53.25</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-03</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>53.75</td>\n",
+       "      <td>53.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-04</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>53.95</td>\n",
+       "      <td>53.10</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-05</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>52.25</td>\n",
+       "      <td>51.50</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-08</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>49.35</td>\n",
+       "      <td>49.25</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              date  fr_ma_base  ger_ma_base\n",
+       "date                                       \n",
+       "2007-01-02  1/2/07       53.85        53.25\n",
+       "2007-01-03  1/3/07       53.75        53.00\n",
+       "2007-01-04  1/4/07       53.95        53.10\n",
+       "2007-01-05  1/5/07       52.25        51.50\n",
+       "2007-01-08  1/8/07       49.35        49.25"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_m.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>fr_ya_base</th>\n",
+       "      <th>ger_ya_base</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>date</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>2007-01-02</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>53.000</td>\n",
+       "      <td>54.70</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-03</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>52.800</td>\n",
+       "      <td>54.35</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-04</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>52.900</td>\n",
+       "      <td>54.20</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-05</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>51.800</td>\n",
+       "      <td>53.40</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-08</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>51.425</td>\n",
+       "      <td>52.70</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              date  fr_ya_base  ger_ya_base\n",
+       "date                                       \n",
+       "2007-01-02  1/2/07      53.000        54.70\n",
+       "2007-01-03  1/3/07      52.800        54.35\n",
+       "2007-01-04  1/4/07      52.900        54.20\n",
+       "2007-01-05  1/5/07      51.800        53.40\n",
+       "2007-01-08  1/8/07      51.425        52.70"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_y.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>France</th>\n",
+       "      <th>Germany</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>date</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>2007-01-02</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>40.50</td>\n",
+       "      <td>36.90</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-03</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>37.75</td>\n",
+       "      <td>34.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-04</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>36.00</td>\n",
+       "      <td>34.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-05</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>29.00</td>\n",
+       "      <td>29.35</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-08</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>32.20</td>\n",
+       "      <td>31.75</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              date  France  Germany\n",
+       "date                               \n",
+       "2007-01-02  1/2/07   40.50    36.90\n",
+       "2007-01-03  1/3/07   37.75    34.00\n",
+       "2007-01-04  1/4/07   36.00    34.00\n",
+       "2007-01-05  1/5/07   29.00    29.35\n",
+       "2007-01-08  1/8/07   32.20    31.75"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_d=df_d.rename(columns = {'fr_da_base':'France', 'ger_da_base':'Germany'})\n",
+    "df_d.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>France</th>\n",
+       "      <th>Germany</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>date</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>2007-01-02</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>53.85</td>\n",
+       "      <td>53.25</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-03</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>53.75</td>\n",
+       "      <td>53.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-04</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>53.95</td>\n",
+       "      <td>53.10</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-05</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>52.25</td>\n",
+       "      <td>51.50</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-08</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>49.35</td>\n",
+       "      <td>49.25</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              date  France  Germany\n",
+       "date                               \n",
+       "2007-01-02  1/2/07   53.85    53.25\n",
+       "2007-01-03  1/3/07   53.75    53.00\n",
+       "2007-01-04  1/4/07   53.95    53.10\n",
+       "2007-01-05  1/5/07   52.25    51.50\n",
+       "2007-01-08  1/8/07   49.35    49.25"
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_m=df_m.rename(columns = {'fr_ma_base':'France', 'ger_ma_base':'Germany'})\n",
+    "df_m.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>France</th>\n",
+       "      <th>Germany</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>date</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>2007-01-02</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>53.000</td>\n",
+       "      <td>54.70</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-03</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>52.800</td>\n",
+       "      <td>54.35</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-04</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>52.900</td>\n",
+       "      <td>54.20</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-05</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>51.800</td>\n",
+       "      <td>53.40</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-08</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>51.425</td>\n",
+       "      <td>52.70</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              date  France  Germany\n",
+       "date                               \n",
+       "2007-01-02  1/2/07  53.000    54.70\n",
+       "2007-01-03  1/3/07  52.800    54.35\n",
+       "2007-01-04  1/4/07  52.900    54.20\n",
+       "2007-01-05  1/5/07  51.800    53.40\n",
+       "2007-01-08  1/8/07  51.425    52.70"
+      ]
+     },
+     "execution_count": 24,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_y=df_y.rename(columns = {'fr_ya_base':'France', 'ger_ya_base':'Germany'})\n",
+    "df_y.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>France</th>\n",
+       "      <th>Germany</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>count</th>\n",
+       "      <td>776.000000</td>\n",
+       "      <td>776.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>mean</th>\n",
+       "      <td>52.782796</td>\n",
+       "      <td>50.851707</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>std</th>\n",
+       "      <td>22.926363</td>\n",
+       "      <td>21.917824</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>min</th>\n",
+       "      <td>15.000000</td>\n",
+       "      <td>13.500000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25%</th>\n",
+       "      <td>34.500000</td>\n",
+       "      <td>34.250000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>50%</th>\n",
+       "      <td>46.175000</td>\n",
+       "      <td>45.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>75%</th>\n",
+       "      <td>67.500000</td>\n",
+       "      <td>63.750000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>max</th>\n",
+       "      <td>158.000000</td>\n",
+       "      <td>242.000000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "           France     Germany\n",
+       "count  776.000000  776.000000\n",
+       "mean    52.782796   50.851707\n",
+       "std     22.926363   21.917824\n",
+       "min     15.000000   13.500000\n",
+       "25%     34.500000   34.250000\n",
+       "50%     46.175000   45.000000\n",
+       "75%     67.500000   63.750000\n",
+       "max    158.000000  242.000000"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_d.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Reduce the precision of numbers - so that it is easy to read\n",
+    "#pd.set_option('precision', 0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>France</th>\n",
+       "      <th>Germany</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>count</th>\n",
+       "      <td>776.000000</td>\n",
+       "      <td>776.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>mean</th>\n",
+       "      <td>52.782796</td>\n",
+       "      <td>50.851707</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>std</th>\n",
+       "      <td>22.926363</td>\n",
+       "      <td>21.917824</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>min</th>\n",
+       "      <td>15.000000</td>\n",
+       "      <td>13.500000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25%</th>\n",
+       "      <td>34.500000</td>\n",
+       "      <td>34.250000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>50%</th>\n",
+       "      <td>46.175000</td>\n",
+       "      <td>45.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>75%</th>\n",
+       "      <td>67.500000</td>\n",
+       "      <td>63.750000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>max</th>\n",
+       "      <td>158.000000</td>\n",
+       "      <td>242.000000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "           France     Germany\n",
+       "count  776.000000  776.000000\n",
+       "mean    52.782796   50.851707\n",
+       "std     22.926363   21.917824\n",
+       "min     15.000000   13.500000\n",
+       "25%     34.500000   34.250000\n",
+       "50%     46.175000   45.000000\n",
+       "75%     67.500000   63.750000\n",
+       "max    158.000000  242.000000"
+      ]
+     },
+     "execution_count": 27,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_d.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>France</th>\n",
+       "      <th>Germany</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>count</th>\n",
+       "      <td>776.000000</td>\n",
+       "      <td>776.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>mean</th>\n",
+       "      <td>55.075290</td>\n",
+       "      <td>50.961985</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>std</th>\n",
+       "      <td>20.822288</td>\n",
+       "      <td>17.016688</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>min</th>\n",
+       "      <td>26.000000</td>\n",
+       "      <td>26.700000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25%</th>\n",
+       "      <td>36.250000</td>\n",
+       "      <td>36.687500</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>50%</th>\n",
+       "      <td>53.450000</td>\n",
+       "      <td>45.800000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>75%</th>\n",
+       "      <td>69.500000</td>\n",
+       "      <td>61.812500</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>max</th>\n",
+       "      <td>122.750000</td>\n",
+       "      <td>98.000000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "           France     Germany\n",
+       "count  776.000000  776.000000\n",
+       "mean    55.075290   50.961985\n",
+       "std     20.822288   17.016688\n",
+       "min     26.000000   26.700000\n",
+       "25%     36.250000   36.687500\n",
+       "50%     53.450000   45.800000\n",
+       "75%     69.500000   61.812500\n",
+       "max    122.750000   98.000000"
+      ]
+     },
+     "execution_count": 28,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_m.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>France</th>\n",
+       "      <th>Germany</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>count</th>\n",
+       "      <td>776.000000</td>\n",
+       "      <td>776.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>mean</th>\n",
+       "      <td>59.871907</td>\n",
+       "      <td>58.259601</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>std</th>\n",
+       "      <td>11.975259</td>\n",
+       "      <td>10.399668</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>min</th>\n",
+       "      <td>43.750000</td>\n",
+       "      <td>42.400000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25%</th>\n",
+       "      <td>51.700000</td>\n",
+       "      <td>50.600000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>50%</th>\n",
+       "      <td>54.100000</td>\n",
+       "      <td>55.400000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>75%</th>\n",
+       "      <td>64.762500</td>\n",
+       "      <td>62.637500</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>max</th>\n",
+       "      <td>93.000000</td>\n",
+       "      <td>90.100000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "           France     Germany\n",
+       "count  776.000000  776.000000\n",
+       "mean    59.871907   58.259601\n",
+       "std     11.975259   10.399668\n",
+       "min     43.750000   42.400000\n",
+       "25%     51.700000   50.600000\n",
+       "50%     54.100000   55.400000\n",
+       "75%     64.762500   62.637500\n",
+       "max     93.000000   90.100000"
+      ]
+     },
+     "execution_count": 29,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_y.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<AxesSubplot:xlabel='date'>"
+      ]
+     },
+     "execution_count": 30,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_d['France'].plot()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<AxesSubplot:xlabel='date'>"
+      ]
+     },
+     "execution_count": 31,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "df_d['Germany'].plot()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<AxesSubplot:xlabel='date'>"
+      ]
+     },
+     "execution_count": 32,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAAAXcAAAEFCAYAAAAYKqc0AAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjMuMywgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/Il7ecAAAACXBIWXMAAAsTAAALEwEAmpwYAABP9ElEQVR4nO2dd3hUZfbHP2cmk0KAhN6LAhYQAcWCFcXOWtfe27oq1l17WXHFXRv6U9eGa9117YoFxd7AQi+KCAgBQgktpGfq+/vj3qmZSSbJTEKS83mePJl773vvPVPu95573vOeV4wxKIqiKK0LR3MboCiKoqQeFXdFUZRWiIq7oihKK0TFXVEUpRWi4q4oitIKUXFXFEVphdQp7iLST0S+EpElIvKLiFxrr58oIutEZIH9d1zEPreKyAoR+U1Ejk7nG1AURVFqInXluYtIL6CXMWaeiHQA5gInAacD5caYh2LaDwVeBfYFegOfA7sYY/yJztG1a1czcODARrwNRVGUtsfcuXO3GGO6xduWUdfOxpgNwAb7dZmI/Ar0qWWXE4HXjDFuYJWIrMAS+h8S7TBw4EDmzJlTlymKoihKBCKyOtG2esXcRWQgMAr4yV51lYgsEpHnRaSTva4PsDZit0Li3AxE5DIRmSMiczZv3lwfMxRFUZQ6SFrcRaQ98DZwnTGmFHgKGASMxPLsJ9fnxMaYKcaY0caY0d26xX2qUBRFURpIUuIuIi4sYX/FGPMOgDGmyBjjN8YEgGexQi8A64B+Ebv3tdcpiqIoTUSdMXcREeA54FdjzMMR63vZ8XiAk4Gf7dfvA/8TkYexOlSHALNSarWiKC0Gr9dLYWEh1dXVzW1KiyU7O5u+ffvicrmS3qdOcQcOBM4DFovIAnvdbcBZIjISMEAB8GcAY8wvIvIGsATwARNqy5RRFKV1U1hYSIcOHRg4cCCWr6jUB2MMW7dupbCwkJ122inp/ZLJlpkBxPtGPqpln3uBe5O2QtmxqC4Bdxnk9W1uS5RWQHV1tQp7IxARunTpQn0TT3SEqlKTJ8fAI8Oa2wqlFaHC3jga8vmpuCs1KdX+b0Vp6SQTc1cURWnROJ1Ohg8fHlqeOnUqrX1UvIq7oiitnpycHBYsWBB3mzEGYwwOR+sKZKi4K4rSZNz9wS8sWV+a0mMO7d2Ru46vXx9RQUEBRx99NPvttx9z587lo48+4r777mP27NlUVVVx6qmncvfddwNWeZQLLriADz74AK/Xy5tvvsluu+1GeXk5V199NXPmzEFEuOuuu/jjH//Ip59+yl133YXb7WbQoEG88MILtG/fPqXvORla161KURQlDlVVVYwcOZKRI0dy8sknA7B8+XKuvPJKfvnlFwYMGMC9997LnDlzWLRoEd988w2LFi0K7d+1a1fmzZvHFVdcwUMPWbUS77nnHvLy8li8eDGLFi3i8MMPZ8uWLUyaNInPP/+cefPmMXr0aB5++OG4NqUb9dwVRWky6uthp4rYsExBQQEDBgxg//33D6174403mDJlCj6fjw0bNrBkyRL23HNPAE455RQA9t57b9555x0APv/8c1577bXQ/p06deLDDz9kyZIlHHjggQB4PB7GjBmT7rcXFxV3RVHaJLm5uaHXq1at4qGHHmL27Nl06tSJCy+8MGpEbVZWFmB1zPp8voTHNMZw5JFH8uqrr6bP8CTRsIyiKG2e0tJScnNzycvLo6ioiI8//rjOfY488kieeOKJ0HJxcTH7778/M2fOZMWKFQBUVFSwbNmytNldGyruiqK0eUaMGMGoUaPYbbfdOPvss0Nhldq44447KC4uZo899mDEiBF89dVXdOvWjRdffJGzzjqLPffckzFjxrB06dImeAc1qXMmpqZg9OjRRifr2IGYmGf/L2leO5RWwa+//sruu+/e3Ga0eOJ9jiIy1xgzOl579dwVRVFaISruiqIorRAVd0VRlFaIiruiKEorRMVdURSlFaLiriiK0gpRcVcUpU1QVFTE2Wefzc4778zee+/NmDFjePfdd5vbrLSh4q4oSqvHGMNJJ53EIYccwsqVK5k7dy6vvfYahYWFSe1fW8mBHRWtLaMoStPx8S2wcXFqj9lzOBx7X61NvvzySzIzM7n88stD6wYMGMDVV1+N3+/nlltu4euvv8btdjNhwgT+/Oc/8/XXX3PnnXfSqVMnli5dypQpU7jrrrvIz89n8eLFnH766QwfPpxHH32Uqqoqpk6dyqBBg/jggw+YNGkSHo+HLl268Morr9CjRw8mTpzImjVrWLlyJWvWrOG6667jmmuu4W9/+xudO3fmuuuuA+D222+ne/fuXHvttY36WNRzVxSl1fPLL7+w1157xd323HPPkZeXx+zZs5k9ezbPPvssq1atAmDevHk8+uij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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "df_d.plot(kind ='line', y = ['France','Germany'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import dash\n",
+    "import dash_core_components as dcc\n",
+    "import dash_html_components as html\n",
+    "import pandas as pd\n",
+    "import plotly.graph_objs as go\n",
+    "import plotly.express as px"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']\n",
+    "\n",
+    "app = dash.Dash(__name__, external_stylesheets=external_stylesheets)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "country_list = ['France','Germany']\n",
+    "date_list = ['Day','Month','Year']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "app.layout = html.Div([\n",
+    "    \n",
+    "    html.Div([\n",
+    "        html.Br(),\n",
+    "        html.Label([''],style={'font-weight': 'bold', \"text-align\": \"center\"}),\n",
+    "        \n",
+    "        dcc.Dropdown(\n",
+    "            id = 'country',\n",
+    "            options = [{'label': i, 'value':i} for i in country_list],\n",
+    "            value=country_list[0]),\n",
+    "        \n",
+    "        \n",
+    "        dcc.RadioItems(\n",
+    "        id = 'date',\n",
+    "        options = [{'label': i, 'value': i} for i in date_list],\n",
+    "        value = date_list[0],\n",
+    "        labelStyle = {'display': 'inline-block'})\n",
+    "        \n",
+    "\n",
+    "    ],style = {'width':'25%','margin-left':'0%'}),\n",
+    "    \n",
+    "    html.Div([\n",
+    "        dcc.Graph(id = 'our_serie')\n",
+    "        \n",
+    "    ], className = 'nine columns'),\n",
+    "    \n",
+    "    \n",
+    "],style ={'display': 'inline-block','width':\"99%\"})\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>France</th>\n",
+       "      <th>Germany</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>date</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>2007-01-02</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>53.000</td>\n",
+       "      <td>54.70</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-03</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>52.800</td>\n",
+       "      <td>54.35</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-04</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>52.900</td>\n",
+       "      <td>54.20</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-05</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>51.800</td>\n",
+       "      <td>53.40</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-08</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>51.425</td>\n",
+       "      <td>52.70</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              date  France  Germany\n",
+       "date                               \n",
+       "2007-01-02  1/2/07  53.000    54.70\n",
+       "2007-01-03  1/3/07  52.800    54.35\n",
+       "2007-01-04  1/4/07  52.900    54.20\n",
+       "2007-01-05  1/5/07  51.800    53.40\n",
+       "2007-01-08  1/8/07  51.425    52.70"
+      ]
+     },
+     "execution_count": 37,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_y.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>France</th>\n",
+       "      <th>Germany</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>date</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>2007-01-02</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>53.85</td>\n",
+       "      <td>53.25</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-03</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>53.75</td>\n",
+       "      <td>53.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-04</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>53.95</td>\n",
+       "      <td>53.10</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-05</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>52.25</td>\n",
+       "      <td>51.50</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-08</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>49.35</td>\n",
+       "      <td>49.25</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              date  France  Germany\n",
+       "date                               \n",
+       "2007-01-02  1/2/07   53.85    53.25\n",
+       "2007-01-03  1/3/07   53.75    53.00\n",
+       "2007-01-04  1/4/07   53.95    53.10\n",
+       "2007-01-05  1/5/07   52.25    51.50\n",
+       "2007-01-08  1/8/07   49.35    49.25"
+      ]
+     },
+     "execution_count": 38,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_m.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>date</th>\n",
+       "      <th>France</th>\n",
+       "      <th>Germany</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>date</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>2007-01-02</th>\n",
+       "      <td>1/2/07</td>\n",
+       "      <td>40.50</td>\n",
+       "      <td>36.90</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-03</th>\n",
+       "      <td>1/3/07</td>\n",
+       "      <td>37.75</td>\n",
+       "      <td>34.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-04</th>\n",
+       "      <td>1/4/07</td>\n",
+       "      <td>36.00</td>\n",
+       "      <td>34.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-05</th>\n",
+       "      <td>1/5/07</td>\n",
+       "      <td>29.00</td>\n",
+       "      <td>29.35</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2007-01-08</th>\n",
+       "      <td>1/8/07</td>\n",
+       "      <td>32.20</td>\n",
+       "      <td>31.75</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              date  France  Germany\n",
+       "date                               \n",
+       "2007-01-02  1/2/07   40.50    36.90\n",
+       "2007-01-03  1/3/07   37.75    34.00\n",
+       "2007-01-04  1/4/07   36.00    34.00\n",
+       "2007-01-05  1/5/07   29.00    29.35\n",
+       "2007-01-08  1/8/07   32.20    31.75"
+      ]
+     },
+     "execution_count": 39,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_d.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "@app.callback(\n",
+    "    dash.dependencies.Output('our_serie','figure'),\n",
+    "    [dash.dependencies.Input('country','value'),\n",
+    "    dash.dependencies.Input('date','value')])\n",
+    "\n",
+    "def build_graph(country,date):\n",
+    "    \n",
+    "    if date == date_list[0]:\n",
+    "        dff  = df_d\n",
+    "    elif date == date_list[1]:\n",
+    "        dff  = df_m\n",
+    "    else:\n",
+    "        dff = df_y\n",
+    "        \n",
+    "       \n",
+    "    if country == country_list[0]:\n",
+    "        fig = px.line(x=dff['date'], y = dff['France'],height=600)\n",
+    "    else:\n",
+    "        fig = px.line(x=dff['date'], y = dff['Germany'],height=600)\n",
+    "                  \n",
+    "    fig.update_layout(yaxis={'title':'Degree'},xaxis={'title':'Date'},\n",
+    "                      title={'text':\"Séries temporelle de la consommation d'électricité en Allemagne et en France\",\n",
+    "                      'font':{'size':18},'x':0.5,'xanchor':'center'})\n",
+    "    return fig\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Dash is running on http://0.0.0.0:8010/\n",
+      "\n",
+      " * Serving Flask app \"__main__\" (lazy loading)\n",
+      " * Environment: production\n",
+      "   WARNING: Do not use the development server in a production environment.\n",
+      "   Use a production WSGI server instead.\n",
+      " * Debug mode: off\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      " * Running on http://0.0.0.0:8010/ (Press CTRL+C to quit)\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:00] \"\u001b[37mGET / HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:04] \"\u001b[37mGET /_dash-component-suites/dash_renderer/react@16.v1_8_3m1604141028.14.0.min.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:04] \"\u001b[37mGET /_dash-component-suites/dash_renderer/prop-types@15.v1_8_3m1604141028.7.2.min.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:04] \"\u001b[37mGET /_dash-component-suites/dash_renderer/polyfill@7.v1_8_3m1604141028.8.7.min.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:04] \"\u001b[37mGET /_dash-component-suites/dash_html_components/dash_html_components.v1_1_1m1604141031.min.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:04] \"\u001b[37mGET /_dash-component-suites/dash_renderer/react-dom@16.v1_8_3m1604141028.14.0.min.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:04] \"\u001b[37mGET /_dash-component-suites/dash_core_components/dash_core_components-shared.v1_13_0m1604141030.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:04] \"\u001b[37mGET /_dash-component-suites/dash_core_components/dash_core_components.v1_13_0m1604141030.min.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:04] \"\u001b[37mGET /_dash-component-suites/dash_renderer/dash_renderer.v1_8_3m1604141028.min.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:06] \"\u001b[37mGET /_favicon.ico?v=1.17.0 HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:06] \"\u001b[37mGET /_dash-layout HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:06] \"\u001b[37mGET /_dash-dependencies HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:06] \"\u001b[37mGET /_dash-component-suites/dash_core_components/async-dropdown.v1_13_0m1604001894.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:06] \"\u001b[37mGET /_dash-component-suites/dash_core_components/async-graph.v1_13_0m1604001894.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:06] \"\u001b[37mGET /_dash-component-suites/dash_core_components/async-plotlyjs.v1_13_0m1604001894.js HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:07] \"\u001b[37mPOST /_dash-update-component HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:22] \"\u001b[37mPOST /_dash-update-component HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:25] \"\u001b[37mPOST /_dash-update-component HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:28] \"\u001b[37mPOST /_dash-update-component HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:30] \"\u001b[37mPOST /_dash-update-component HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:22:31] \"\u001b[37mPOST /_dash-update-component HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:23:06] \"\u001b[37mPOST /_dash-update-component HTTP/1.1\u001b[0m\" 200 -\n",
+      "127.0.0.1 - - [26/Nov/2020 15:23:07] \"\u001b[37mPOST /_dash-update-component HTTP/1.1\u001b[0m\" 200 -\n"
+     ]
+    }
+   ],
+   "source": [
+    "if __name__ == '__main__':\n",
+    "    app.run_server(debug=False,host = '0.0.0.0', port = 8010)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "        "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
