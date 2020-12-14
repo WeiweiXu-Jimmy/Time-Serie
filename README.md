@@ -1,6 +1,6 @@
 # Time-Serie
 
-Vous pouvez regarder le rapport : Étude de cas 2 Serie temporelle (Les modèles ARMA,ARCH, GARCH pour la prévision ). Grand merci de votre temps et patience
+Vous pouvez regarder le rapport :Rapport_Prix de l'électricité(Les modèles ARMA,ARCH, GARCH pour la prévision ). Grand merci de votre temps et patience
 
 Présentation de serie temporelle  en Dash (Projet prévision prix de l’électricité)
 
