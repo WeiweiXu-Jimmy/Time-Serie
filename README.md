@@ -1,7 +1,7 @@
 # Time-Serie
 
 Vous pouvez regarder le rapport :Rapport_Prix de l'électricité(Les modèles ARMA,ARCH, GARCH pour la prévision ). Grand merci de votre temps et patience
-(You can look at the report: Rapport_Prix de l'électricité (ARMA, ARCH, GARCH models for forecasting). Thank you very much for your time and patience)
+(You could look at the report: Rapport_Prix de l'électricité (ARMA, ARCH, GARCH models for forecasting). Thank you very much for your time and patience)
 
 Présentation de serie temporelle  en Dash (Projet prévision prix de l’électricité)
 
