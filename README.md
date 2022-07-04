@@ -1,6 +1,6 @@
 # Time-Serie
 
-### Please look at the report: Rapport_Prix de l'électricité.PDF for all details (ARMA, ARCH, GARCH models for forecasting). 
+### Please look at the report: Rapport_Prix de l'électricité.PDF for all details (ARMA, ARCH and GARCH models for making predictions). 
 
 ### Thank you very much for your time and patience
 
